@@ -18,10 +18,9 @@ URL = "https://apps.castlepoint.gov.uk/cpapps/index.cfm?roadID=2757&fa=wastecale
 raw_html = requests.get(URL)
 data = BeautifulSoup(raw_html.text, "html.parser")
 
-pink = data.find_all('td', class_='pink', limit=3)
-black = data.find_all('td', class_='normal', limit=3)
+pink = data.find_all('td', class_='pink', limit=4)
+black = data.find_all('td', class_='normal', limit=4)
 month = data.find('div', class_='calMonthCurrent')
-
 todays_date = datetime.date.today()
 
 # creats sack lists
@@ -47,12 +46,13 @@ else:
     color_sack[::2] = black_sack
     color_sack[1::2] = pink_sack
 
-# Sort months
-second_month_start = sum(color_sack[i] > color_sack[i+1]
-                        for i in range(len(color_sack)-1))
-current_month_list = color_sack[:color_sack.index(second_month_start)]
+# sorts months
+second_month_start = [i for i in range(len(color_sack)-1) if (color_sack[i] > color_sack[i+1])]
+second_month_start = int("".join(map(str, second_month_start))) + 1 # converts list to integer
 
-next_month_list = color_sack[color_sack.index(second_month_start):]
+current_month_list = (color_sack[:(second_month_start)])
+
+next_month_list = (color_sack[(second_month_start):])
 
 # checks today for rubbish
 if todays_date.day in current_month_list:
@@ -78,4 +78,4 @@ else:
 
 # print(next_rubbish_day)
 print(f"Next rubbish day is {(calendar.day_name[day])} the {(ord(next_rubbish_day))}" +
-    (" and is Pink" if next_rubbish_day in pink_sack else " and is Black"))
+      (" and is Pink" if next_rubbish_day in pink_sack else " and is Black"))
