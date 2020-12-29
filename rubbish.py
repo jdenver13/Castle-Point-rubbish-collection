@@ -68,8 +68,14 @@ try:
         x for x in current_month_list if x > todays_date.day)
 except StopIteration:
     next_rubbish_day = next_month_list[0]
+    if todays_date.month == 12 and next_rubbish_day == next_month_list[0]:
+        todaysmonth=todays_date.month%12+1
+        todaysyear=todays_date.year+1
+    else:
+        todaysmonth=todays_date.month
+        todaysyear=todays_date.year
     day = calendar.weekday(
-        (todays_date.year), (todays_date.month+1), (next_rubbish_day))
+        (todaysyear), (todaysmonth), (next_rubbish_day))
 else:
     next_rubbish_day = next(
         x for x in current_month_list if x > todays_date.day)
